@@ -8,11 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @CrossOrigin
 @AllArgsConstructor
-@RequestMapping(path = "/api/flight")
+@RequestMapping(path = "/api/flights")
 public class FlightController {
 
     private final WebService service;
@@ -23,6 +24,10 @@ public class FlightController {
         Flight[] flights = service.getFlightsFromBelgrade();
         System.out.println(flights.length);
         return flights;
+    }
 
+    @GetMapping("/today")
+    public List<Flight> getToday() throws IOException, InterruptedException {
+        return service.getCurrentDay();
     }
 }

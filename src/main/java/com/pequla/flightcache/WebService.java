@@ -12,8 +12,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class WebService {
@@ -46,7 +48,7 @@ public class WebService {
                     .GET()
                     .build();
             HttpResponse<String> rsp = client.send(req, HttpResponse.BodyHandlers.ofString());
-            FLIGHTS =  mapper.readValue(rsp.body(), Flight[].class);
+            FLIGHTS = mapper.readValue(rsp.body(), Flight[].class);
             CACHED_AT = LocalDateTime.now();
         }
         return FLIGHTS;
@@ -64,4 +66,8 @@ public class WebService {
 //        xmlMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 //        return xmlMapper.readValue(rsp.body(), Flight[].class);
 //    }
+
+    public List<Flight> getCurrentDay() throws IOException, InterruptedException {
+        return Arrays.stream(getFlightsFromBelgrade()).filter(flight -> Objects.equals(flight.getDAN(), "0")).collect(Collectors.toList());
+    }
 }
