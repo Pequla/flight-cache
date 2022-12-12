@@ -46,6 +46,17 @@ public class FlightService {
         return repository.findDistinctDestination();
     }
 
+    public Page<Flight> getTodayFlights(Pageable pageable, HttpServletRequest request) {
+        accessService.saveAccess(request);
+        return repository.findAllByScheduledAtAfter(LocalDateTime.now(), pageable);
+    }
+
+    public Page<Flight> getTodayFlightsByDestination(String destination, Pageable pageable, HttpServletRequest request) {
+        accessService.saveAccess(request);
+        LocalDateTime now = LocalDateTime.now();
+        return repository.findFlightsByDestinationContainsIgnoreCaseAndScheduledAtAfter(destination, now, pageable);
+    }
+
     public void updateFlightData() {
         try {
             for (FlightModel f : webService.getCurrentDay()) {
