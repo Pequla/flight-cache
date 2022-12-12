@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Flight {
+public class FlightModel {
 
     @JsonProperty("KLJUC")
     private String key;
