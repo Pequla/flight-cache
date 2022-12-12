@@ -20,6 +20,11 @@ public class FlightController {
     private final FlightService service;
 
     @GetMapping
+    public Page<Flight> getToday(Pageable pageable, HttpServletRequest request) {
+        return service.getTodayFlights(pageable, request);
+    }
+
+    @GetMapping(path = "/all")
     public Page<Flight> getAll(Pageable pageable, HttpServletRequest request) {
         return service.getFlights(pageable, request);
     }
@@ -36,16 +41,6 @@ public class FlightController {
 
     @GetMapping(path = "/destination/{destination}")
     public Page<Flight> getByDestination(@PathVariable String destination, Pageable pageable, HttpServletRequest request) {
-        return service.getFlightsByDestination(destination, pageable, request);
-    }
-
-    @GetMapping(path = "/today")
-    public Page<Flight> getToday(Pageable pageable, HttpServletRequest request) {
-        return service.getTodayFlights(pageable, request);
-    }
-
-    @GetMapping(path = "/today/destination/{destination}")
-    public Page<Flight> getByTodayDestination(@PathVariable String destination, Pageable pageable, HttpServletRequest request) {
         return service.getTodayFlightsByDestination(destination, pageable, request);
     }
 }

@@ -12,8 +12,6 @@ import java.util.List;
 
 @Repository
 public interface FlightRepository extends JpaRepository<Flight, Integer> {
-    Page<Flight> findFlightsByDestinationContainsIgnoreCase(String destination, Pageable pageable);
-
     @Query(value = "SELECT DISTINCT destination FROM flight", nativeQuery = true)
     List<String> findDistinctDestination();
 

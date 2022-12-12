@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,11 +37,6 @@ public class FlightService {
         return repository.findById(id);
     }
 
-    public Page<Flight> getFlightsByDestination(String destination, Pageable pageable, HttpServletRequest request) {
-        accessService.saveAccess(request);
-        return repository.findFlightsByDestinationContainsIgnoreCase(destination, pageable);
-    }
-
     public List<String> getDestinations(HttpServletRequest request) {
         accessService.saveAccess(request);
         return repository.findDistinctDestination();
@@ -59,7 +55,7 @@ public class FlightService {
 
     public void updateFlightData() {
         try {
-            for (FlightModel f : webService.getCurrentDay()) {
+            for (FlightModel f : webService.getFlightsFromBelgrade()) {
                 log.info("Indexing flight: " + f.getKey());
 
                 // Record exists
@@ -70,20 +66,19 @@ public class FlightService {
 
                 log.info("Parsing flight data");
                 LocalTime st = LocalTime.parse(f.getST());
-                LocalDate date = LocalDate.now();
 
                 // Making sure ET exists
                 LocalDateTime estimated = null;
                 if (f.getET() != null && !f.getET().equals("")) {
                     LocalTime et = LocalTime.parse(f.getET());
-                    estimated = LocalDateTime.of(date, et);
+                    estimated = LocalDateTime.of(parseDate(f.getDATUM_E()), et);
                 }
 
                 Flight flight = Flight.builder()
                         .flightKey(f.getKey())
                         .flightNumber(f.getBROJ_LETA())
                         .destination(f.getDESTINACIJA())
-                        .scheduledAt(LocalDateTime.of(date, st))
+                        .scheduledAt(LocalDateTime.of(parseDate(f.getDATUM()), st))
                         .estimatedAt(estimated)
                         .connectedType(validate(f.getTIP_VEZE()))
                         .connectedFlight(validate(f.getVEZAN_LET()))
@@ -103,5 +98,25 @@ public class FlightService {
     private String validate(String value) {
         if (value.equals("")) return null;
         return value;
+    }
+
+    private LocalDate parseDate(String date) {
+        String[] split = date.split("-");
+        int year = Integer.parseInt("20" + split[2]);
+        Month month = switch (split[1]) {
+            case "Feb" -> Month.FEBRUARY;
+            case "Mar" -> Month.MARCH;
+            case "Apr" -> Month.APRIL;
+            case "May" -> Month.MAY;
+            case "Jun" -> Month.JUNE;
+            case "Jul" -> Month.JULY;
+            case "Aug" -> Month.AUGUST;
+            case "Sep" -> Month.SEPTEMBER;
+            case "Oct" -> Month.OCTOBER;
+            case "Nov" -> Month.NOVEMBER;
+            case "Dec" -> Month.DECEMBER;
+            default -> Month.JANUARY;
+        };
+        return LocalDate.of(year, month, Integer.parseInt(split[0]));
     }
 }
