@@ -64,6 +64,13 @@ public class FlightService {
                 log.info("Indexing flight: " + f.getKey());
                 Flight parsed = parseFlightModel(f);
 
+                // Ignore same flights under different number
+                if (parsed.getConnectedFlight() != null &&
+                        repository.existsByFlightNumberAndScheduledAt(parsed.getConnectedFlight(), parsed.getScheduledAt())) {
+                    log.warn("Skipping flight, already exists under number " + parsed.getConnectedFlight());
+                    continue;
+                }
+
                 // Record exists
                 Optional<Flight> optional = repository.findByFlightKey(f.getKey());
                 if (optional.isPresent()) {
