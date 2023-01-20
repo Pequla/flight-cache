@@ -9,5 +9,8 @@ This application exposes a wide range of json rest endpoints suitable for any ap
 - GET `/api/flight` - Paged response of future flights 
 - GET `/api/flight/all` - Paged response of all flights
 - GET `/api/flight/{id}` - Flight for ID
-- GET `/api/flight/destination` - List of all destinations (suitable for in application dropdowns)
+- GET `/api/flight/destination` - List of destinations of all future flights
+- GET `/api/flight/destination/all` - List of all destinations
 - GET `/api/flight/destination/{dest}` - Paged response of all future flights to that destination
+
+> Endpoints returning list of destinations are suitable for in app dropdowns

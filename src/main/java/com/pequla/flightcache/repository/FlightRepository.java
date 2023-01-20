@@ -9,13 +9,17 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FlightRepository extends JpaRepository<Flight, Integer> {
+    @Query(value = "SELECT DISTINCT destination FROM flight WHERE scheduled_at >= CAST(CURRENT_TIMESTAMP AS DATETIME)", nativeQuery = true)
+    List<String> findDistinctDestinationForToday();
+
     @Query(value = "SELECT DISTINCT destination FROM flight", nativeQuery = true)
     List<String> findDistinctDestination();
 
-    boolean existsByFlightKey(String key);
+    Optional<Flight> findByFlightKey(String key);
 
     Page<Flight> findAllByScheduledAtAfter(LocalDateTime scheduledAt, Pageable pageable);
 

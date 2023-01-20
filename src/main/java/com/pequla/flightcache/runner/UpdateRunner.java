@@ -17,13 +17,9 @@ public class UpdateRunner implements CommandLineRunner {
     private final UpdateTask task;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         Timer timer = new Timer();
-        log.info("Scheduled data refresh every day");
-        Calendar today = Calendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, 1);
-        today.set(Calendar.MINUTE, 0);
-        today.set(Calendar.SECOND, 0);
-        timer.schedule(task, today.getTime(), TimeUnit.MILLISECONDS.convert(24, TimeUnit.HOURS));
+        log.info("Scheduled data refresh every hour");
+        timer.schedule(task, 0L, 1000 * 60 * 60);
     }
 }

@@ -37,6 +37,11 @@ public class FlightService {
         return repository.findById(id);
     }
 
+    public List<String> getTodayDestinations(HttpServletRequest request) {
+        accessService.saveAccess(request);
+        return repository.findDistinctDestinationForToday();
+    }
+
     public List<String> getDestinations(HttpServletRequest request) {
         accessService.saveAccess(request);
         return repository.findDistinctDestination();
@@ -57,42 +62,47 @@ public class FlightService {
         try {
             for (FlightModel f : webService.getFlightsFromBelgrade()) {
                 log.info("Indexing flight: " + f.getKey());
+                Flight parsed = parseFlightModel(f);
 
                 // Record exists
-                if (repository.existsByFlightKey(f.getKey())) {
-                    log.warn("Flight exists, skipping");
-                    continue;
+                Optional<Flight> optional = repository.findByFlightKey(f.getKey());
+                if (optional.isPresent()) {
+                    log.info("Flight exists, updating data");
+                    Flight existing = optional.get();
+                    parsed.setId(existing.getId());
                 }
 
-                log.info("Parsing flight data");
-                LocalTime st = LocalTime.parse(f.getST());
-
-                // Making sure ET exists
-                LocalDateTime estimated = null;
-                if (f.getET() != null && !f.getET().equals("")) {
-                    LocalTime et = LocalTime.parse(f.getET());
-                    estimated = LocalDateTime.of(parseDate(f.getDATUM_E()), et);
-                }
-
-                Flight flight = Flight.builder()
-                        .flightKey(f.getKey())
-                        .flightNumber(f.getBROJ_LETA())
-                        .destination(f.getDESTINACIJA())
-                        .scheduledAt(LocalDateTime.of(parseDate(f.getDATUM()), st))
-                        .estimatedAt(estimated)
-                        .connectedType(validate(f.getTIP_VEZE()))
-                        .connectedFlight(validate(f.getVEZAN_LET()))
-                        .plane(validate(f.getTIP_AVIONA()))
-                        .gate(validate(f.getGATE_BAY()))
-                        .terminal(validate(f.getTERMINAL()))
-                        .build();
-
-                log.info("Saving flight data for " + flight.getFlightKey());
-                repository.save(flight);
+                log.info("Saving flight data for " + parsed.getFlightKey());
+                repository.save(parsed);
             }
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Flight parseFlightModel(FlightModel f) {
+        log.info("Parsing flight data");
+        LocalTime st = LocalTime.parse(f.getST());
+
+        // Making sure ET exists
+        LocalDateTime estimated = null;
+        if (f.getET() != null && !f.getET().equals("")) {
+            LocalTime et = LocalTime.parse(f.getET());
+            estimated = LocalDateTime.of(parseDate(f.getDATUM_E()), et);
+        }
+
+        return Flight.builder()
+                .flightKey(f.getKey())
+                .flightNumber(f.getBROJ_LETA())
+                .destination(f.getDESTINACIJA())
+                .scheduledAt(LocalDateTime.of(parseDate(f.getDATUM()), st))
+                .estimatedAt(estimated)
+                .connectedType(validate(f.getTIP_VEZE()))
+                .connectedFlight(validate(f.getVEZAN_LET()))
+                .plane(validate(f.getTIP_AVIONA()))
+                .gate(validate(f.getGATE_BAY()))
+                .terminal(validate(f.getTERMINAL()))
+                .build();
     }
 
     private String validate(String value) {

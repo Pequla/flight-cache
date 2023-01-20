@@ -36,6 +36,11 @@ public class FlightController {
 
     @GetMapping(path = "/destination")
     public List<String> getDestinations(HttpServletRequest request) {
+        return service.getTodayDestinations(request);
+    }
+
+    @GetMapping(path = "/destination/all")
+    public List<String> getAllDestinations(HttpServletRequest request) {
         return service.getDestinations(request);
     }
 
