@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,12 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
 
     @Query(value = "SELECT DISTINCT destination FROM flight ORDER BY destination ASC ", nativeQuery = true)
     List<String> findDistinctDestination();
+
+    @Query(value = "SELECT DISTINCT destination FROM flight WHERE scheduled_at >= CAST(CURRENT_TIMESTAMP AS DATETIME) AND LOWER(destination) LIKE LOWER(':input%') ORDER BY destination ASC", nativeQuery = true)
+    List<String> findDistinctDestinationForTodayAndStartsWith(@Param("input") String input);
+
+    @Query(value = "SELECT DISTINCT destination FROM flight WHERE LOWER(destination) LIKE LOWER(':input%') ORDER BY destination ASC", nativeQuery = true)
+    List<String> findDistinctDestinationAndStartsWith(@Param("input") String input);
 
     Optional<Flight> findByFlightKey(String key);
 

@@ -42,10 +42,21 @@ public class FlightService {
         return repository.findDistinctDestinationForToday();
     }
 
+    public List<String> getTodayDestinationsStatsWith(String input, HttpServletRequest request) {
+        accessService.saveAccess(request);
+        return repository.findDistinctDestinationForTodayAndStartsWith(input);
+    }
+
     public List<String> getDestinations(HttpServletRequest request) {
         accessService.saveAccess(request);
         return repository.findDistinctDestination();
     }
+
+    public List<String> getDestinationsStatsWith(String input, HttpServletRequest request) {
+        accessService.saveAccess(request);
+        return repository.findDistinctDestinationAndStartsWith(input);
+    }
+
 
     public Page<Flight> getTodayFlights(Pageable pageable, HttpServletRequest request) {
         accessService.saveAccess(request);
@@ -58,7 +69,7 @@ public class FlightService {
         return repository.findFlightsByDestinationContainsIgnoreCaseAndScheduledAtAfter(destination, now, pageable);
     }
 
-    public void updateFlightData() {
+    public void updateFlightData(HttpServletRequest request) {
         try {
             for (FlightModel f : webService.getFlightsFromBelgrade()) {
                 log.info("Indexing flight: " + f.getKey());
@@ -80,6 +91,7 @@ public class FlightService {
                 }
 
                 log.info("Saving flight data for " + parsed.getFlightKey());
+                accessService.saveAccess(request);
                 repository.save(parsed);
             }
         } catch (IOException | InterruptedException e) {
