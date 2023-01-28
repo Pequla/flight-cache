@@ -20,11 +20,11 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
     @Query(value = "SELECT DISTINCT destination FROM flight ORDER BY destination ASC ", nativeQuery = true)
     List<String> findDistinctDestination();
 
-    @Query(value = "SELECT DISTINCT destination FROM flight WHERE scheduled_at >= CAST(CURRENT_TIMESTAMP AS DATETIME) AND LOWER(destination) LIKE LOWER(':input%') ORDER BY destination ASC", nativeQuery = true)
-    List<String> findDistinctDestinationForTodayAndStartsWith(@Param("input") String input);
+    @Query(value = "SELECT DISTINCT destination FROM flight WHERE scheduled_at >= CAST(CURRENT_TIMESTAMP AS DATETIME) AND LOWER(destination) LIKE LOWER(:dest) ORDER BY destination ASC", nativeQuery = true)
+    List<String> findDistinctDestinationForTodayLike(@Param("dest") String dest);
 
-    @Query(value = "SELECT DISTINCT destination FROM flight WHERE LOWER(destination) LIKE LOWER(':input%') ORDER BY destination ASC", nativeQuery = true)
-    List<String> findDistinctDestinationAndStartsWith(@Param("input") String input);
+    @Query(value = "SELECT DISTINCT destination FROM flight WHERE LOWER(destination) LIKE LOWER(:dest) ORDER BY destination ASC", nativeQuery = true)
+    List<String> findDistinctDestinationLike(@Param("dest") String dest);
 
     Optional<Flight> findByFlightKey(String key);
 

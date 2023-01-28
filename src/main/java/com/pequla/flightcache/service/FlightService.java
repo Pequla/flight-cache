@@ -44,7 +44,7 @@ public class FlightService {
 
     public List<String> getTodayDestinationsStatsWith(String input, HttpServletRequest request) {
         accessService.saveAccess(request);
-        return repository.findDistinctDestinationForTodayAndStartsWith(input);
+        return repository.findDistinctDestinationForTodayLike(input + "%");
     }
 
     public List<String> getDestinations(HttpServletRequest request) {
@@ -54,7 +54,7 @@ public class FlightService {
 
     public List<String> getDestinationsStatsWith(String input, HttpServletRequest request) {
         accessService.saveAccess(request);
-        return repository.findDistinctDestinationAndStartsWith(input);
+        return repository.findDistinctDestinationLike(input + "%");
     }
 
 
