@@ -4,7 +4,7 @@ Flight data REST API built in Spring Boot
 ## Endpoints
 This application exposes a wide range of json rest endpoints suitable for any application
 
-> Application base URL: `http://82.208.22.205:7000` or `https://flight.pequla.com`
+> Application base URL: `https://flight.pequla.com`
 
 - GET `/api/flight` - Paged response of future flights 
 - GET `/api/flight/all` - Paged response of all flights
