@@ -37,6 +37,11 @@ public class FlightService {
         return repository.findById(id);
     }
 
+    public List<Flight> getFlightsByIds(List<Integer> ids, HttpServletRequest request) {
+        accessService.saveAccess(request);
+        return repository.findAllById(ids);
+    }
+
     public List<String> getTodayDestinations(HttpServletRequest request) {
         accessService.saveAccess(request);
         return repository.findDistinctDestinationForToday();
@@ -56,7 +61,6 @@ public class FlightService {
         accessService.saveAccess(request);
         return repository.findDistinctDestinationLike(input + "%");
     }
-
 
     public Page<Flight> getTodayFlights(Pageable pageable, HttpServletRequest request) {
         accessService.saveAccess(request);
