@@ -35,7 +35,7 @@ public class FlightController {
         return ResponseEntity.of(service.getFlightById(id, request));
     }
 
-    @GetMapping(path = "/list")
+    @PostMapping(path = "/list")
     public List<Flight> getByIds(@RequestBody List<Integer> ids, HttpServletRequest request) {
         return service.getFlightsByIds(ids, request);
     }

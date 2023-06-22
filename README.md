@@ -9,7 +9,7 @@ This application exposes a wide range of json rest endpoints suitable for any ap
 - GET `/api/flight` - Paged response of future flights 
 - GET `/api/flight/all` - Paged response of all flights
 - GET `/api/flight/{id}` - Flight for ID
-- GET `/api/flight/list` - Flights for IDs sent in request body as array
+- POST `/api/flight/list` - Flights for IDs sent in request body as array
 - GET `/api/flight/destination` - List of destinations of all future flights
 - GET `/api/flight/destination/search/{dest}` - List of autocompleted destinations for future flights
 - GET `/api/flight/destination/all` - List of all destinations
