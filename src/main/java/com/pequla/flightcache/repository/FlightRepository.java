@@ -32,5 +32,7 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
 
     Page<Flight> findAllByScheduledAtAfter(LocalDateTime scheduledAt, Pageable pageable);
 
+    List<Flight> findAllByScheduledAtAfter(LocalDateTime scheduledAt);
+
     Page<Flight> findFlightsByDestinationContainsIgnoreCaseAndScheduledAtAfter(String destination, LocalDateTime scheduledAt, Pageable pageable);
 }

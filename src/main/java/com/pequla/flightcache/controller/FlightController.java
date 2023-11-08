@@ -25,6 +25,11 @@ public class FlightController {
         return service.getTodayFlights(pageable, request);
     }
 
+    @GetMapping(path = "/list")
+    public List<Flight> getToday(HttpServletRequest request) {
+        return service.getTodayFlightsAsList(request);
+    }
+
     @GetMapping(path = "/all")
     public Page<Flight> getAll(Pageable pageable, HttpServletRequest request) {
         return service.getFlights(pageable, request);

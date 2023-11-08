@@ -67,6 +67,11 @@ public class FlightService {
         return repository.findAllByScheduledAtAfter(LocalDateTime.now(), pageable);
     }
 
+    public List<Flight> getTodayFlightsAsList(HttpServletRequest request) {
+        accessService.saveAccess(request);
+        return repository.findAllByScheduledAtAfter(LocalDateTime.now());
+    }
+
     public Page<Flight> getTodayFlightsByDestination(String destination, Pageable pageable, HttpServletRequest request) {
         accessService.saveAccess(request);
         LocalDateTime now = LocalDateTime.now();
