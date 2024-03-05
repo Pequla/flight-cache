@@ -18,3 +18,5 @@ This application exposes a wide range of json rest endpoints suitable for any ap
 - GET `/api/flight/destination/{dest}` - Paged response of all future flights to that destination
 
 > Endpoints returning list of destinations are suitable for in app dropdowns, where endpoints with `/search` are suitable for autocomplete inputs
+
+> You can use query param **?type=** (arrival or departure) on endpoints that return flight objects to get **desired flights by type** 
