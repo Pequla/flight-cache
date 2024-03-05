@@ -25,11 +25,14 @@ public class FlightService {
 
     private final FlightRepository repository;
     private final AccessService accessService;
+    private final TypeService typeService;
     private final WebService webService;
 
-    public Page<Flight> getFlights(Pageable pageable, HttpServletRequest request) {
+    public Page<Flight> getFlights(Pageable pageable, String type, HttpServletRequest request) {
         accessService.saveAccess(request);
-        return repository.findAll(pageable);
+        if (type == null || type.equals(""))
+            return repository.findAll(pageable);
+        return repository.findAllByTypeNameIgnoreCase(type, pageable);
     }
 
     public Optional<Flight> getFlightById(Integer id, HttpServletRequest request) {
@@ -62,20 +65,28 @@ public class FlightService {
         return repository.findDistinctDestinationLike(input + "%");
     }
 
-    public Page<Flight> getTodayFlights(Pageable pageable, HttpServletRequest request) {
-        accessService.saveAccess(request);
-        return repository.findAllByScheduledAtAfter(LocalDateTime.now(), pageable);
-    }
-
-    public List<Flight> getTodayFlightsAsList(HttpServletRequest request) {
-        accessService.saveAccess(request);
-        return repository.findAllByScheduledAtAfter(LocalDateTime.now());
-    }
-
-    public Page<Flight> getTodayFlightsByDestination(String destination, Pageable pageable, HttpServletRequest request) {
+    public Page<Flight> getTodayFlights(Pageable pageable, String type, HttpServletRequest request) {
         accessService.saveAccess(request);
         LocalDateTime now = LocalDateTime.now();
-        return repository.findFlightsByDestinationContainsIgnoreCaseAndScheduledAtAfter(destination, now, pageable);
+        if (type == null || type.equals(""))
+            return repository.findAllByScheduledAtAfter(now, pageable);
+        return repository.findAllByScheduledAtAfterAndTypeNameIgnoreCase(now, type, pageable);
+    }
+
+    public List<Flight> getTodayFlightsAsList(String type, HttpServletRequest request) {
+        accessService.saveAccess(request);
+        LocalDateTime now = LocalDateTime.now();
+        if (type == null || type.equals(""))
+            return repository.findAllByScheduledAtAfter(now);
+        return repository.findAllByScheduledAtAfterAndTypeNameIgnoreCase(now, type);
+    }
+
+    public Page<Flight> getTodayFlightsByDestination(String destination, String type, Pageable pageable, HttpServletRequest request) {
+        accessService.saveAccess(request);
+        LocalDateTime now = LocalDateTime.now();
+        if (type == null || type.equals(""))
+            return repository.findFlightsByDestinationContainsIgnoreCaseAndScheduledAtAfter(destination, now, pageable);
+        return repository.findFlightsByDestinationContainsIgnoreCaseAndTypeNameIgnoreCaseAndScheduledAtAfter(destination, type, now, pageable);
     }
 
     public void updateFlightData(HttpServletRequest request) {
@@ -120,6 +131,7 @@ public class FlightService {
         }
 
         return Flight.builder()
+                .type(typeService.getFlightTypeByInternalType(f.getTIP()))
                 .flightKey(f.getKey())
                 .flightNumber(f.getBROJ_LETA())
                 .destination(f.getDESTINACIJA())

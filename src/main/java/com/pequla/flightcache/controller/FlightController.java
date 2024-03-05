@@ -21,18 +21,18 @@ public class FlightController {
     private final FlightService service;
 
     @GetMapping
-    public Page<Flight> getToday(Pageable pageable, HttpServletRequest request) {
-        return service.getTodayFlights(pageable, request);
+    public Page<Flight> getToday(Pageable pageable, @RequestParam(name = "type", required = false) String type, HttpServletRequest request) {
+        return service.getTodayFlights(pageable, type, request);
     }
 
     @GetMapping(path = "/list")
-    public List<Flight> getToday(HttpServletRequest request) {
-        return service.getTodayFlightsAsList(request);
+    public List<Flight> getToday(@RequestParam(name = "type", required = false) String type, HttpServletRequest request) {
+        return service.getTodayFlightsAsList(type,request);
     }
 
     @GetMapping(path = "/all")
-    public Page<Flight> getAll(Pageable pageable, HttpServletRequest request) {
-        return service.getFlights(pageable, request);
+    public Page<Flight> getAll(Pageable pageable, @RequestParam(name = "type", required = false) String type, HttpServletRequest request) {
+        return service.getFlights(pageable, type, request);
     }
 
     @GetMapping(path = "/{id}")
@@ -66,8 +66,8 @@ public class FlightController {
     }
 
     @GetMapping(path = "/destination/{destination}")
-    public Page<Flight> getByDestination(@PathVariable String destination, Pageable pageable, HttpServletRequest request) {
-        return service.getTodayFlightsByDestination(destination, pageable, request);
+    public Page<Flight> getByDestination(@PathVariable String destination, @RequestParam(name = "type", required = false) String type, Pageable pageable, HttpServletRequest request) {
+        return service.getTodayFlightsByDestination(destination, type, pageable, request);
     }
 
     @PostMapping(path = "/update")

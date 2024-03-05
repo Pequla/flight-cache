@@ -1,5 +1,6 @@
 package com.pequla.flightcache.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,6 +18,10 @@ public class Flight {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "flight_id")
     private Integer id;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "type_id", nullable = false)
+    private FlightType type;
 
     @Column(unique = true, nullable = false, name = "flight_key")
     private String flightKey;

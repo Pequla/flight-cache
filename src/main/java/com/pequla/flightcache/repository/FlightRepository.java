@@ -30,9 +30,17 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
 
     boolean existsByFlightNumberAndScheduledAt(String number, LocalDateTime scheduledAt);
 
+    Page<Flight> findAllByTypeNameIgnoreCase(String name, Pageable pageable);
+
     Page<Flight> findAllByScheduledAtAfter(LocalDateTime scheduledAt, Pageable pageable);
+
+    Page<Flight> findAllByScheduledAtAfterAndTypeNameIgnoreCase(LocalDateTime scheduledAt, String name, Pageable pageable);
 
     List<Flight> findAllByScheduledAtAfter(LocalDateTime scheduledAt);
 
+    List<Flight> findAllByScheduledAtAfterAndTypeNameIgnoreCase(LocalDateTime scheduledAt, String name);
+
     Page<Flight> findFlightsByDestinationContainsIgnoreCaseAndScheduledAtAfter(String destination, LocalDateTime scheduledAt, Pageable pageable);
+
+    Page<Flight> findFlightsByDestinationContainsIgnoreCaseAndTypeNameIgnoreCaseAndScheduledAtAfter(String destination, String name, LocalDateTime scheduledAt, Pageable pageable);
 }
